@@ -32,16 +32,33 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [
-    DiscordProvider,
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
+    require("next-auth/providers/google").default({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    require("next-auth/providers/linkedin").default({
+      clientId: process.env.LINKEDIN_CLIENT_ID!,
+      clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
+    }),
+    {
+      id: "credentials",
+      name: "Credentials",
+      type: "credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const { email, password } = credentials ?? {};
+        if (typeof email !== "string" || typeof password !== "string") return null;
+        const user = await db.user.findUnique({ where: { email }, select: { id: true, email: true, name: true, password: true } });
+        if (!user || !user.password) return null;
+        const bcrypt = require("bcryptjs");
+        const valid = await bcrypt.compare(password, user.password);
+        if (!valid) return null;
+        return { id: user.id, email: user.email, name: user.name };
+      },
+    },
   ],
   adapter: PrismaAdapter(db),
   callbacks: {
