@@ -70,7 +70,7 @@ Nexwell Learning is a Next.js-based “virtual university” for lifelong learne
 
 ---
 
-## ⚙️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
