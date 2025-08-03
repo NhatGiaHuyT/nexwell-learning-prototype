@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 const socialProviders = [
@@ -27,6 +28,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,13 +37,17 @@ export default function LoginPage() {
       redirect: false,
       email,
       password,
-      callbackUrl: "/"
+      callbackUrl: "/api/redirect"
     });
     if (res?.error) {
       setError("Invalid email or password");
       return;
     }
-    if (res?.ok) window.location.href = res.url || "/";
+    if (res?.ok) {
+      console.log("Login successful, redirecting to appropriate page");
+      // Use router.push for better client-side navigation
+      router.push("/api/redirect");
+    }
   };
 
   return (
@@ -74,7 +80,7 @@ export default function LoginPage() {
             <button
               key={provider.id}
               type="button"
-              onClick={() => signIn(provider.id)}
+              onClick={() => signIn(provider.id, { callbackUrl: "/", redirect: true })}
               className={`w-full flex items-center justify-center py-2 px-4 rounded-lg font-semibold shadow-sm transition ${provider.color}`}
             >
               {provider.icon}

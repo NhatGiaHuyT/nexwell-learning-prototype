@@ -20,6 +20,7 @@ export async function POST(req: Request) {
       data: {
         email,
         password: hashedPassword,
+        onboardingCompleted: false,
       },
     });
     return NextResponse.json({ message: "User created", user: { id: user.id, email: user.email } }, { status: 201 });

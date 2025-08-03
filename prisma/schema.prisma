@@ -47,15 +47,19 @@ model Account {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    password      String?   // <-- Added for authentication
-    accounts      Account[]
-    sessions      Session[]
-    posts         Post[]
+    id                  String    @id @default(cuid())
+    name                String?
+    email               String?   @unique
+    emailVerified       DateTime?
+    image               String?
+    password            String?   // <-- Added for authentication
+    onboardingCompleted Boolean   @default(false)
+    cognitiveQuiz       Json?
+    goal                String?
+    weeklyTime          Int?
+    accounts            Account[]
+    sessions            Session[]
+    posts               Post[]
 }
 
 model Session {
