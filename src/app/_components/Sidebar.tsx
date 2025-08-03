@@ -1,8 +1,9 @@
 "use client";
 
 import React from 'react';
-import { FaChalkboardTeacher, FaBook, FaEnvelope, FaChartBar, FaCreditCard, FaCog, FaLifeRing, FaTimes, FaBars } from 'react-icons/fa';
+import { FaChalkboardTeacher, FaBook, FaEnvelope, FaChartBar, FaCreditCard, FaCog, FaLifeRing, FaTimes, FaBars, FaSignOutAlt } from 'react-icons/fa';
 import { useSidebar } from './dashboard/SidebarContext';
+import { signOut } from 'next-auth/react';
 
 type SidebarItemProps = {
   icon: React.ReactNode;
@@ -37,6 +38,10 @@ function SidebarItem({ icon, label, active = false, badge, onClick }: SidebarIte
 export default function Sidebar() {
   const { isSidebarOpen, toggleSidebar } = useSidebar();
   
+  const handleLogout = () => {
+    signOut({ callbackUrl: '/auth/login' });
+  };
+
   if (!isSidebarOpen) {
     return (
       <div className="fixed left-0 top-1/2 z-30">
@@ -89,6 +94,7 @@ export default function Sidebar() {
         <div className="space-y-1 pt-4 border-t border-[#2D2D3A]">
           <SidebarItem icon={<FaLifeRing />} label="Support" onClick={() => console.log('Support clicked')} />
           <SidebarItem icon={<FaCog />} label="Settings" onClick={() => console.log('Settings clicked')} />
+          <SidebarItem icon={<FaSignOutAlt />} label="Logout" onClick={handleLogout} />
         </div>
       </aside>
     </>
